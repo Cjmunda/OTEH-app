@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>OTEH — One Tap Emergency Hotlines</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: #2c55d8;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .frame {
+      width: 360px;
+      height: 700px;
+      border-radius: 20px;
+      background: #daafaf;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 20px rgba(75, 25, 25, 0.5);
+    }
+
+    .scanner::before {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent 40%, rgba(230, 33, 33, 0.6), transparent 60%);
+      animation: scan 3s linear infinite;
+      z-index: 0;
+    }
+    @keyframes scan {
+      0% { top: -100%; }
+      50% { top: 100%; }
+      100% { top: -100%; }
+    }
+
+    #screen-splash {
+      background: radial-gradient(circle at center, #9d0208 0%, #A0130E 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      position: relative;
+    }
+    #screen-splash::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #A0130E(255,0,0,0.1);
+      mix-blend-mode: overlay;
+    }
+    
+    .car-logo {
+      background-image: src('logo.jpg');
+      width: 1px;
+      height: 1px;
+      margin-bottom: 20px;
+      z-index: 1;
+    }
+    
+  
+    #sosBtn {
+      margin-top: 200px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #ff0000;
+      border: 3px solid white;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      z-index: 1;
+    }
+    #sosBtn:hover {
+      background: #2e4169;
+    }
+
+    #screen-contacts {
+      background: radial-gradient(circle at center, #EE3932 60%, #EE3932 100%);
+      width: 360px;
+      height: 700px;
+      color: white;
+      flex-direction: column;
+      padding: 20px;
+      display: none;
+      position: relative;
+      overflow: hidden;
+    }
+    #screen-contacts.scanner::before {
+      opacity: 0.4;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      z-index: 1;
+    }
+    .back {
+      font-size: 20px;
+      cursor: pointer;
+      color: #ccc;
+      z-index: 1;
+    }
+    .header h1 {
+      font-size: 16px;
+      color: #fff;
+      text-align: center;
+      flex: 1;
+    }
+    .list {
+        margin-top: 50px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 1;
+    }
+    .contact {
+      background: rgba(255,255,255,0.15);
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      transition: 0.2s;
+    }
+    .contact:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    #screen-call {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #cc5a5a;
+      color: white;
+      height: 100%;
+      text-align: center;
+      position: relative;
+    }
+    #screen-call.scanner::before {
+      opacity: 0.25;
+    }
+    .call-time {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 8px;
+      z-index: 1;
+    }
+    .call-name {
+      font-size: 22px;
+      margin-bottom: 6px;
+      z-index: 1;
+    }
+    #callNumber {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 30px;
+      z-index: 1;
+    }
+    #endCallBtn {
+      margin-top: 300px;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: red;
+      color: white;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      z-index: 1;
+    }
+    #endCallBtn:hover {
+      background: #b30000;
+    }
+  </style>
+</head>
+<body>
+<div class="frame">
+    <div class="screen scanner" id="screen-splash">
+      <div class="logo-container">
+        <img class="logo-image" src="logo.jpg">
+      </div>
+      <button id="sosBtn">EMERGENCY</button>
+    </div>
+    <div class="screen scanner" id="screen-contacts">
+      <div class="header">
+        <div class="back" id="backFromContacts">&lt;</div>
+        <h1>Emergency Contacts</h1>
+      </div>
+      <div class="content-wrapper"> 
+        <div class="contact-container">
+          <img class="contact-image" src="contact.jpg">
+        </div>
+        <div class="list" id="contactsList"></div>
+      </div>
+      </div>   
+<div class="screen scanner" id="screen-call">
+  <div class="call-time" id="callTimer">00:00</div>
+  <div class="call-name" id="callName">BARANGAY</div>
+  <div id="callNumber">+639569461181</div>
+  <a id="nativeTelLink" href="#" style="display:none">Call</a>
+  <button id="endCallBtn">END</button>
+</div>
+
+  <script>
+    const contacts = [
+      { label: 'BARANGAY', phone: '+639569461181' },
+      { label: 'FIRE STATION', phone: '911' },
+      { label: 'HOSPITAL', phone: '(02) 8426 8888' },
+      { label: 'POLICE', phone: '(02) 8936 3624' },
+    ];
+
+    const screens = {
+      splash: document.getElementById('screen-splash'),
+      contacts: document.getElementById('screen-contacts'),
+      call: document.getElementById('screen-call'),
+    };
+    const sosBtn = document.getElementById('sosBtn');
+    const backFromContacts = document.getElementById('backFromContacts');
+    const contactsList = document.getElementById('contactsList');
+    const nativeTelLink = document.getElementById('nativeTelLink');
+    const endCallBtn = document.getElementById('endCallBtn');
+    const callNameEl = document.getElementById('callName');
+    const callNumberEl = document.getElementById('callNumber');
+    const callTimerEl = document.getElementById('callTimer');
+
+    let callTimerInterval = null;
+
+    function showScreen(name) {
+      Object.keys(screens).forEach(k => {
+        screens[k].style.display = (k === name) ? 'flex' : 'none';
+      });
+    }
+
+    function buildContactsList() {
+      contactsList.innerHTML = '';
+      contacts.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'contact';
+        item.textContent = `${c.label} (${c.phone})`;
+        item.addEventListener('click', () => startCall(c));
+        contactsList.appendChild(item);
+      });
+    }
+
+    function startCall(contact) {
+      if (callTimerInterval) clearInterval(callTimerInterval);
+      callNameEl.textContent = contact.label;
+      callNumberEl.textContent = contact.phone || '';
+      nativeTelLink.href = 'tel:' + (contact.phone || '');
+      showScreen('call');
+      setTimeout(() => { try { nativeTelLink.click(); } catch(e){} }, 200);
+      let seconds = 0;
+      callTimerEl.textContent = 'Calling...';
+      callTimerInterval = setInterval(() => {
+        seconds++;
+        const mm = String(Math.floor(seconds/60)).padStart(2,'0');
+        const ss = String(seconds%60).padStart(2,'0');
+        callTimerEl.textContent = `${mm}:${ss}`;
+      }, 1000);
+    }
+
+    function endCall() {
+      if (callTimerInterval) clearInterval(callTimerInterval);
+      callTimerEl.textContent = '00:00';
+      showScreen('splash');
+    }
+
+    sosBtn.addEventListener('click', () => { buildContactsList(); showScreen('contacts'); });
+    backFromContacts.addEventListener('click', () => showScreen('splash'));
+    endCallBtn.addEventListener('click', endCall);
+
+    showScreen('splash');
+  </script>
+</body>
+</html>
+
+
